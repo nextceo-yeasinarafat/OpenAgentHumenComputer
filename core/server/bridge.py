@@ -265,7 +265,7 @@ def make_computer(values: dict) -> None:
 
         making.step("building the image of the computer (this is the long part)")
         if not run_and_stream([
-            "docker", "build", "--progress=plain",
+            "docker", "build",
             "-t", COMPUTER_IMAGE, "-f", str(DOCKER_DIR / "ubuntu" / "Dockerfile"),
             str(DOCKER_DIR),
         ], making):

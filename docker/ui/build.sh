@@ -28,6 +28,7 @@ docker build \
   -t "$IMAGE" \
   -f "$HERE/Dockerfile" \
   --build-arg "NODE_VERSION=${node_version}" \
+  --build-arg "CACHE_BUST=$(date +%s)" \
   --build-arg "REPO_URL=${REPO_URL}" \
   --build-arg "REPO_REF=${REPO_REF}" \
   "$HERE"

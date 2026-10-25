@@ -64,7 +64,9 @@ COPY core/ /opt/openagenthumencomputer/core/
 # branch or tag passes REPO_REF.
 ARG REPO_URL=https://github.com/nextceo-yeasinarafat/OpenAgentHumenComputer.git
 ARG REPO_REF=main
+ARG CACHE_BUST=main
 RUN set -eux; \
+    echo "the checkout of ${CACHE_BUST}"; \
     git clone --depth 1 --branch "$REPO_REF" "$REPO_URL" /opt/openagenthumencomputer/core/app; \
     chmod 0755 /opt/openagenthumencomputer/core/*.sh /opt/openagenthumencomputer/core/*.py
 
