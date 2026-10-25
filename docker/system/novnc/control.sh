@@ -24,9 +24,16 @@ wait_port() {
 }
 
 start() {
-  if port_open "$OPEN_COMPUTER_NOVNC_PORT"; then
+  if xdpyinfo -display "$DISPLAY" >/dev/null 2>&1 \
+     && port_open "$OPEN_COMPUTER_VNC_PORT" \
+     && port_open "$OPEN_COMPUTER_NOVNC_PORT"; then
     echo "novnc: already running on port $OPEN_COMPUTER_NOVNC_PORT"
     return 0
+  fi
+
+  if port_open "$OPEN_COMPUTER_NOVNC_PORT" || port_open "$OPEN_COMPUTER_VNC_PORT"; then
+    stop
+    sleep 1
   fi
 
   mkdir -p "$OPEN_COMPUTER_LOG_DIR"
@@ -80,7 +87,7 @@ status() {
   if xdpyinfo -display "$DISPLAY" >/dev/null 2>&1; then
     echo "novnc: display $DISPLAY is up ($(xdpyinfo -display "$DISPLAY" | awk '/dimensions:/{print $2; exit}'))"
   else
-    echo "novnc: display $DISPLAY is not up"
+    echo "novnc: the display is down"
   fi
   version
 }

@@ -30,6 +30,6 @@ npm install --include=dev --no-audit --no-fund
 log "building the UI (npm run build)"
 npm run build
 
-"$HERE/status.py" || true
+python3 "$HERE/status.py" || true
 
 log "restart the container to serve the new build: docker restart openagenthumencomputer"
