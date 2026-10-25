@@ -26,3 +26,4 @@ dist/
 # the secrets of this machine (the token, the keys)
 .env
 .env.token
+public/github_photos/

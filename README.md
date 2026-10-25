@@ -2,9 +2,9 @@
 
 **A real Linux computer for you and your AI — made by one command, owned by you, isolated from the machine you already use.**
 
-[![The desktop of OpenHumenComputer](public/demo-poster.png)](public/Core.mp4)
+[![The desktop of OpenHumenComputer](public/screens/01-desktop.png)](https://github.com/nextceo-yeasinarafat/OpenAgentHumenComputer/releases/download/demo-video/Core.mp4)
 
-▶ **[Watch the demo — 6 min 41 s](public/Core.mp4)** (the video file lives at `public/Core.mp4`)
+▶ **[Watch the demo — 6 min 41 s](https://github.com/nextceo-yeasinarafat/OpenAgentHumenComputer/releases/download/demo-video/Core.mp4)** — hosted as a release asset, so the repository stays light.
 
 *The demo shows the desktop, the terminal with a local model and a coding agent, VS Code, and the settings — all inside the computer.*
 
@@ -76,6 +76,24 @@ The UI and the bridge are the same process on the same port, so there is no prox
 
 The agent acts inside the computer. It does not see your host files, your host browser, or your host credentials.
 
+## Screens
+
+**The desktop** — a real Linux desktop in the browser; the dock holds the computer's applications.
+
+![The desktop](public/screens/01-desktop.png)
+
+**Settings → System Details** — the computer, its account and the hardware that was chosen.
+
+![System details](public/screens/02-system-details.png)
+
+**Chrome** — the computer's own browser, painted from its screen and driven through the DevTools protocol.
+
+![Chrome inside the computer](public/screens/03-chrome.png)
+
+**Terminal** — a real PTY inside the computer, opening in the computer user's home.
+
+![The terminal](public/screens/04-terminal.png)
+
 ## Security model
 
 - The computer is a container: its own users, home, root and network. No host directory is mounted into it by default.
@@ -110,6 +128,10 @@ The agent acts inside the computer. It does not see your host files, your host b
 - [`devpost/scope.md`](devpost/scope.md) — the problem, the kernel, what "done" means.
 - [`devpost/prd.md`](devpost/prd.md) — the product as a person experiences it.
 - [`devpost/spec.md`](devpost/spec.md) — how it is built, how it fails, how it recovers.
+
+## License
+
+MIT — see [`LICENSE`](LICENSE).
 
 ## Name
 
