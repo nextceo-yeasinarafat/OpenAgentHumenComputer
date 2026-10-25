@@ -2,9 +2,9 @@
 
 **A real Linux computer for you and your AI — made by one command, owned by you, isolated from the machine you already use.**
 
-[![The desktop of OpenHumenComputer](public/demo-poster.png)](public/Core.webm)
+[![The desktop of OpenHumenComputer](public/demo-poster.png)](public/Core.mp4)
 
-▶ **[Watch the demo — 6 min 41 s](public/Core.webm)** (the video file lives at `public/Core.webm`)
+▶ **[Watch the demo — 6 min 41 s](public/Core.mp4)** (the video file lives at `public/Core.mp4`)
 
 *The demo shows the desktop, the terminal with a local model and a coding agent, VS Code, and the settings — all inside the computer.*
 
