@@ -118,6 +118,7 @@ Requirements: Docker, `git`, `curl`, network, about 5 GB of free disk.
 
 ## Documentation
 
+- [`docs/idea-and-use-cases.md`](docs/idea-and-use-cases.md) — the idea, and a complete list of where it can be used.
 - [`devpost/scope.md`](devpost/scope.md) — the problem, the kernel, what "done" means.
 - [`devpost/prd.md`](devpost/prd.md) — the product as a person experiences it.
 - [`devpost/spec.md`](devpost/spec.md) — how it is built, how it fails, how it recovers.
