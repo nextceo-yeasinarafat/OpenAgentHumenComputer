@@ -58,6 +58,21 @@ RUN set -eux; \
     rm -rf /tmp/bun.zip /tmp/bun; \
     bun --version
 
+ARG DOCKER_VERSION=27.3.1
+RUN set -eux; \
+    arch="$(dpkg --print-architecture)"; \
+    case "$arch" in \
+      amd64) docker_arch=x86_64 ;; \
+      arm64) docker_arch=aarch64 ;; \
+      *) echo "unsupported architecture: $arch" >&2; exit 1 ;; \
+    esac; \
+    curl -fsSL --retry 3 --retry-delay 2 -o /tmp/docker.tgz \
+      "https://download.docker.com/linux/static/stable/${docker_arch}/docker-${DOCKER_VERSION}.tgz"; \
+    tar -xzf /tmp/docker.tgz -C /tmp; \
+    install -m 0755 /tmp/docker/docker /usr/local/bin/docker; \
+    rm -rf /tmp/docker.tgz /tmp/docker; \
+    docker --version
+
 # The scripts of the container: start, pull, serve and status.
 COPY core/ /opt/openagenthumencomputer/core/
 

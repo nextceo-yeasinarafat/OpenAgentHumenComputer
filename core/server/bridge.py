@@ -31,12 +31,12 @@ BRIDGE_PORT = int(os.environ.get("AGENT_HUMEN_COMPUTER_BRIDGE_PORT", "7071"))
 
 ROOT = Path(__file__).resolve().parents[2]
 ENV_FILE = ROOT / ".env"
-DOCKER_DIR = ROOT / "docker"
+DOCKER_DIR = Path(os.environ.get("OPEN_COMPUTER_DOCKER_DIR", str(ROOT / "docker")))
 SYSTEM_CONF = DOCKER_DIR / "system" / "system.conf"
 
 BASE_IMAGE = os.environ.get("UBUNTU_BASE_IMAGE", "ubuntu:24.04")
 COMPUTER_IMAGE = os.environ.get("UBUNTU_IMAGE", "openagenthumencomputer/ubuntu:24.04")
-CONTAINER_NAME = os.environ.get("COMPUTER_CONTAINER", "openhumen-computer")
+CONTAINER_NAME = os.environ.get("COMPUTER_CONTAINER", "openagentcomputer")
 
 
 LANGUAGE_LOCALES = {

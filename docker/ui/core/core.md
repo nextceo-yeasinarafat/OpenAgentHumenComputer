@@ -43,8 +43,10 @@ docker exec -it openagenthumencomputer bash
 | `OPEN_COMPUTER_UI_REPO` | the GitHub URL | the repository `start.sh` clones |
 | `OPEN_COMPUTER_UI_REF` | `main` | the branch or tag it clones |
 
-## What the container does not do
+## What the container does
 
-It serves the UI only. The bridge of the computer (`/api`, `/ws`) and the
-desktop services live in the other folders of `docker/system`; until the bridge
-exists, the UI reports the bridge as `unreachable`.
+It serves the UI on `1010` and starts the bridge of the computer on
+`127.0.0.1:7071` from `core/server/bridge.py`, with the socket of Docker
+mounted (`run.sh`). From the page the computer is made: the image of the
+Linux is built once, then the container is started with the cores, the RAM
+and the storage that were chosen.

@@ -36,6 +36,7 @@ docker run -d \
   --name "$NAME" \
   --restart unless-stopped \
   -p "${PORT}:1010" \
+  -v /var/run/docker.sock:/var/run/docker.sock \
   "$IMAGE" >/dev/null
 
 for _ in $(seq 1 30); do
