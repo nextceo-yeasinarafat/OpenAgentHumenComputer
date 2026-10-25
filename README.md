@@ -2,9 +2,9 @@
 
 **A real Linux computer for you and your AI — made by one command, owned by you, isolated from the machine you already use.**
 
-[![The desktop of OpenHumenComputer](public/screens/01-desktop.png)](https://github.com/nextceo-yeasinarafat/OpenAgentHumenComputer/releases/download/demo-video/Core.mp4)
+[![The desktop of OpenHumenComputer](public/screens/01-desktop.png)](https://youtu.be/fhSloyFmxl8)
 
-▶ **[Watch the demo — 6 min 41 s](https://github.com/nextceo-yeasinarafat/OpenAgentHumenComputer/releases/download/demo-video/Core.mp4)** — hosted as a release asset, so the repository stays light.
+▶ **[Watch the demo on YouTube](https://youtu.be/fhSloyFmxl8)**
 
 *The demo shows the desktop, the terminal with a local model and a coding agent, VS Code, and the settings — all inside the computer.*
 
