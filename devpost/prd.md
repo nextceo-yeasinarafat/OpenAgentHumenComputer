@@ -7,7 +7,7 @@ project: OpenHumenComputer
 
 ## The first five minutes
 
-1. The user runs one command. Docker is prepared if it is missing; the repository is cloned; the UI image is built; a page opens at `http://<host>:1010`.
+1. The user runs one command. The workspace is prepared on the machine, and a page opens in the browser.
 2. The page asks for the computer's name, the account, the password, the country and the language — then the hardware: cores, RAM, storage and GPU share.
 3. The user presses **CREATE**. The box becomes a terminal: every step of the making is written as it happens, and a bar of `+` fills with a percentage.
 4. When the computer is up, the page moves to the desktop by itself — no second login, no reload.
@@ -24,7 +24,7 @@ project: OpenHumenComputer
 - A black ground with dotted guides that meet in `+` marks; the Linux screen behind the windows is pure black.
 - The dock holds the computer's applications; every window is a real application inside the computer:
   - **Chrome**, painted from the computer's screen and driven through the DevTools protocol;
-  - **Terminal**, a real PTY that opens as the computer's user in its home, with tabs;
+  - **Terminal**, a real terminal that opens as the computer's user in its home, with tabs;
   - **Files**, the real file manager, with open, upload, download and media preview;
   - **VS Code**, the real VS Code Server of the computer;
   - **Text editor** and **media viewer** for what the agent produced;
@@ -41,7 +41,7 @@ project: OpenHumenComputer
 
 ## Edge cases the product owns
 
-- Docker missing → the setup command installs it, asking for admin once.
+- The machine has no container engine → the setup asks for permission once and prepares it.
 - Port already in use → a clear message before anything is touched.
 - Build fails → the real error line is kept, the making stops, nothing half-made is presented as ready.
 - Long first build → the page says it is the long part and keeps streaming, so the user can walk away and come back.
