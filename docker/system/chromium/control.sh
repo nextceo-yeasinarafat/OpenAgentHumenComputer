@@ -58,6 +58,9 @@ start() {
 
   rm -f "$ASLEEP_MARK"
   mkdir -p "$OPEN_COMPUTER_LOG_DIR" "$OPEN_COMPUTER_CHROMIUM_PROFILE"
+  if [[ "$(id -u)" -eq 0 ]] && id "$OPEN_COMPUTER_USER" >/dev/null 2>&1; then
+    chown "$OPEN_COMPUTER_USER:$OPEN_COMPUTER_USER" "$OPEN_COMPUTER_CHROMIUM_PROFILE"
+  fi
 
   local args=()
   if [[ -n "$url" ]]; then
@@ -72,6 +75,7 @@ start() {
 
   if wait_for_browser "$pid"; then
     echo "chromium: started (pid $pid), DevTools on 127.0.0.1:$OPEN_COMPUTER_CDP_PORT"
+    forward_start || true
     return 0
   fi
 

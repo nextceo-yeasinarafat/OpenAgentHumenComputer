@@ -47,6 +47,10 @@ printf '%s ALL=(ALL) NOPASSWD:ALL\n' "$USER_NAME" > "/etc/sudoers.d/91-${USER_NA
 chmod 0440 "/etc/sudoers.d/91-${USER_NAME}"
 mkdir -p "/home/${USER_NAME}/workspace"
 chown -R "${USER_NAME}:${USER_NAME}" "/home/${USER_NAME}"
+install -d -m 0755 -o "${USER_NAME}" -g "${USER_NAME}" "/home/${USER_NAME}/.config"
+touch "/home/${USER_NAME}/.sudo_as_admin_successful"
+chown "${USER_NAME}:${USER_NAME}" "/home/${USER_NAME}/.sudo_as_admin_successful"
+chmod 0644 "/home/${USER_NAME}/.sudo_as_admin_successful"
 
 if [[ -x "/opt/open-computer/auth/init_user.py" ]]; then
   AUTH_USER="$USER_NAME" AUTH_PASSWORD="$PASSWORD" \

@@ -71,6 +71,7 @@ CHROMIUM_ARGS=(
 )
 
 if [[ "$(id -u)" -eq 0 ]] && id "$OPEN_COMPUTER_USER" >/dev/null 2>&1; then
+  install -d -m 0700 -o "$OPEN_COMPUTER_USER" -g "$OPEN_COMPUTER_USER" "$OPEN_COMPUTER_CHROMIUM_PROFILE"
   exec runuser -u "$OPEN_COMPUTER_USER" -- \
     env DISPLAY="$DISPLAY" \
     GTK_THEME="Adwaita:dark" \

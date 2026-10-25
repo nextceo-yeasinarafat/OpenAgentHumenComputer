@@ -403,6 +403,19 @@ def read_system_value(key: str) -> str | None:
 
 def read_system_user() -> str:
 
+    try:
+        answer = subprocess.run(
+            [
+                "docker", "exec", CONTAINER_NAME, "bash", "-lc",
+                ". /etc/open-computer/computer.env 2>/dev/null; printf '%s' \"${COMPUTER_USER:-}\"",
+            ],
+            capture_output=True, text=True, timeout=6,
+        )
+        name = answer.stdout.strip()
+        if name:
+            return name
+    except (OSError, subprocess.SubprocessError):
+        pass
     return read_system_value("SYSTEM_USER") or "open-computer"
 
 
@@ -514,8 +527,12 @@ def docker_exec_output(
 
 
 
+    account = user or read_system_user()
     exec_id = docker_exec_create(
-        CONTAINER_NAME, command, user=user or read_system_user(), env=env
+        CONTAINER_NAME, command,
+        user=account,
+        workdir=f"/home/{account}" if account and account != "root" else None,
+        env=env,
     )
     stream = DockerExecStream(exec_id)
     chunks: list[bytes] = []
@@ -2661,25 +2678,57 @@ class Bridge(BaseHTTPRequestHandler):
         report = vscode_control(action, timeout)
         self._json(200, report)
 
-    def services_read(self) -> None:
+    SERVICE_SCRIPTS = {
+        "screen": "/opt/open-computer/novnc/control.sh",
+        "browser": "/opt/open-computer/chromium/control.sh",
+        "mcp": "/opt/open-computer/mcp/control.sh",
+        "vscode": "/opt/open-computer/vscode/control.sh",
+    }
 
+    def services_read(self) -> None:
+        services = {name: "off" for name in KNOWN_SERVICES}
+        services["bridge"] = "on"
+        info = inspect_container(CONTAINER_NAME)
+        running = bool(info and (info.get("State") or {}).get("Running"))
+        services["computer"] = "on" if running else "off"
+        if running:
+            for name, script in self.SERVICE_SCRIPTS.items():
+                try:
+                    answer = subprocess.run(
+                        ["docker", "exec", CONTAINER_NAME, "bash", script, "status"],
+                        capture_output=True, text=True, timeout=15,
+                    )
+                    text = f"{answer.stdout} {answer.stderr}".lower()
+                    services[name] = (
+                        "off" if answer.returncode != 0 or "not running" in text else "on"
+                    )
+                except (OSError, subprocess.SubprocessError):
+                    services[name] = "off"
+        self._json(200, {"services": services})
+
+    def _service_action(self, action: str, name: str) -> tuple[bool, str]:
+        if name == "computer":
+            try:
+                answer = subprocess.run(
+                    ["docker", action, CONTAINER_NAME],
+                    capture_output=True, text=True, timeout=180,
+                )
+            except (OSError, subprocess.SubprocessError) as problem:
+                return False, str(problem)
+            return answer.returncode == 0, (answer.stderr or answer.stdout).strip()
+        script = self.SERVICE_SCRIPTS.get(name)
+        if script is None:
+            return False, "the service has no script in the computer"
         try:
             answer = subprocess.run(
-                ["bash", str(CORE_SYSTEAM_DIR / "status.sh")],
-                capture_output=True, text=True, timeout=30,
+                ["docker", "exec", CONTAINER_NAME, "bash", script, action],
+                capture_output=True, text=True, timeout=180,
             )
         except (OSError, subprocess.SubprocessError) as problem:
-            self._json(503, {"detail": f"the machine did not answer: {problem}"})
-            return
-        services = {}
-        for line in answer.stdout.splitlines():
-            name, _, state = line.partition(": ")
-            if name.strip() in KNOWN_SERVICES:
-                services[name.strip()] = state.strip()
-        missing = [name for name in KNOWN_SERVICES if name not in services]
-        for name in missing:
-            services[name] = "off"
-        self._json(200, {"services": services})
+            return False, str(problem)
+        if answer.returncode != 0:
+            return False, (answer.stderr or answer.stdout).strip()
+        return True, ""
 
     def services_write(self, action: str, name: str) -> None:
 
@@ -2689,29 +2738,27 @@ class Bridge(BaseHTTPRequestHandler):
         if name != "all" and name not in KNOWN_SERVICES:
             self._json(400, {"detail": f"unknown service: {name}"})
             return
-        if name == "bridge" and action in ("stop", "restart"):
-
-
+        if name == "bridge":
             self._json(200, {"accepted": True, "action": action, "service": name})
-            subprocess.Popen(
-                ["bash", str(CORE_SYSTEAM_DIR / "control.sh"), action, name],
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                start_new_session=True,
-            )
+            if action in ("stop", "restart"):
+                subprocess.Popen(
+                    ["docker", "restart", os.environ.get("HOSTNAME", "openagenthumencomputer")],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                    start_new_session=True,
+                )
             return
-        try:
-            answer = subprocess.run(
-                ["bash", str(CORE_SYSTEAM_DIR / "control.sh"), action, name],
-                capture_output=True, text=True, timeout=180,
-            )
-        except (OSError, subprocess.SubprocessError) as problem:
-            self._json(503, {"detail": f"the machine did not answer: {problem}"})
-            return
-        if answer.returncode != 0:
-            self._json(
-                503,
-                {"detail": answer.stdout.strip() or answer.stderr.strip() or "the service did not answer"},
-            )
+        targets = (
+            [service for service in KNOWN_SERVICES if service != "bridge"]
+            if name == "all"
+            else [name]
+        )
+        problems = []
+        for service in targets:
+            ok, detail = self._service_action(action, service)
+            if not ok:
+                problems.append(f"{service}: {detail or 'did not answer'}")
+        if problems:
+            self._json(503, {"detail": "; ".join(problems)})
             return
         self._json(200, {"accepted": True, "action": action, "service": name})
 
