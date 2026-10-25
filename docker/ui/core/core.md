@@ -45,8 +45,9 @@ docker exec -it openagenthumencomputer bash
 
 ## What the container does
 
-It serves the UI on `1010` and starts the bridge of the computer on
-`127.0.0.1:7071` from `core/server/bridge.py`, with the socket of Docker
-mounted (`run.sh`). From the page the computer is made: the image of the
-Linux is built once, then the container is started with the cores, the RAM
-and the storage that were chosen.
+It serves the UI on `1010` and runs the bridge of the computer on the same
+port from `core/server/bridge.py`, with the socket of Docker mounted
+(`run.sh`). The page, the API and every stream (`/ws/pty`, `/ws/cdp`,
+`/websockify`, `/novnc`) come from that one process. From the page the computer
+is made: the image of the Linux is built once, then the container is started
+with the cores, the RAM and the storage that were chosen.

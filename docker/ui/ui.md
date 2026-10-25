@@ -14,7 +14,7 @@ on port `1010` for every interface of the machine, from one process.
 | `run.sh` | starts (or replaces) the container `openagenthumencomputer`, publishing `1010` |
 | `core/start.sh` | the entrypoint: clone/install/build when missing, then run the bridge that serves the build, `/api`, `/ws`, `/websockify` and `/novnc` on `1010` |
 | `core/pull.sh` | `git fetch` + `npm install` + `npm run build` inside the container |
-| `core/serve.sh` | serves `core/app/dist` on `0.0.0.0:1010` |
+| `core/serve.sh` | runs the bridge that serves the build, the API and every stream on `0.0.0.0:1010` |
 | `core/status.py` | JSON state: commit, build, runtime, whether the port answers |
 | `core/core.md` | the container layout and the commands |
 | `ui.md` | this document |

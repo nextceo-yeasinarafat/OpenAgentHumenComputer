@@ -8,41 +8,36 @@ project: OpenHumenComputer
 ## The first five minutes
 
 1. The user runs one command. Docker is prepared if it is missing; the repository is cloned; the UI image is built; a page opens at `http://<host>:1010`.
-2. The page shows a box: the name of the computer, a user name, a password, the country and language, then cores, RAM, storage and GPU share.
-3. The user presses **CREATE**. The box becomes a terminal: every step of the making is written as it happens, and a bar of `+` fills from left to right with a percentage on the right.
-4. When the making is done, the page moves to the desktop by itself. There is no second login and no reload.
+2. The page asks for the computer's name, the account, the password, the country and the language — then the hardware: cores, RAM, storage and GPU share.
+3. The user presses **CREATE**. The box becomes a terminal: every step of the making is written as it happens, and a bar of `+` fills with a percentage.
+4. When the computer is up, the page moves to the desktop by itself — no second login, no reload.
 
 ## The box
 
 - Four pages, one decision each: identity → hardware → summary → making.
 - Fields are validated where they are typed; the summary says back exactly what was chosen.
-- The making page never hides a failure: a failed step is red and says why, and the last line says `INCOMPLETE`.
-- Logs follow themselves; the scrollbar is invisible on purpose.
+- The making never hides a failure: the failed step is red and says why, and the last line says `INCOMPLETE`.
+- Logs follow themselves and the scrollbar is invisible on purpose.
 
 ## The desktop
 
-- A black ground with dotted guides that meet in `+` marks — a frame, not a wallpaper.
-- A dock with the computer's applications; every window is a real application served by the computer:
-  - **Chrome**, painted from the computer's screen, driven through the DevTools protocol;
-  - **Terminal**, a real PTY (`/ws/pty`) inside the computer, opening as the computer's user in its home;
+- A black ground with dotted guides that meet in `+` marks; the Linux screen behind the windows is pure black.
+- The dock holds the computer's applications; every window is a real application inside the computer:
+  - **Chrome**, painted from the computer's screen and driven through the DevTools protocol;
+  - **Terminal**, a real PTY that opens as the computer's user in its home, with tabs;
   - **Files**, the real file manager, with open, upload, download and media preview;
   - **VS Code**, the real VS Code Server of the computer;
   - **Text editor** and **media viewer** for what the agent produced;
-  - **Settings → System Control** for the computer, the screen, the browser, MCP and VS Code.
-- The desktop is the human's seat. The API token and MCP server are the AI's seat. Both look at the same computer.
-
-## Feel
-
-- It should feel like a computer someone handed you, not a chat product: names, files, windows, time.
-- Dark, quiet, no decoration that does not mean something. Pure black behind the Linux screen.
-- The loading of a window is honest: while the computer has no picture, the window says so; when it has one, the picture appears.
+  - **Settings** — the API token, the MCP configuration, the system details, the hardware analysis and the System Control buttons.
+- The desktop is the human's seat. The token and MCP are the agents' seat. Many agents can attach to the same computer while the human watches.
 
 ## Behaviour
 
 - Bridge, computer and screen start together; a screen that lost its VNC process is restarted by the bridge.
 - A refresh does not restart the making and does not lose the computer: the page asks the machine what exists.
 - The password chosen in the box is the password of that computer and of its lock screen.
-- Stopping and starting services is a button, not a shell command.
+- Service start, stop and restart are buttons in System Control, not shell commands.
+- A skills folder in the computer's home is readable by the agent and survives restarts of the desktop.
 
 ## Edge cases the product owns
 
@@ -54,10 +49,10 @@ project: OpenHumenComputer
 
 ## Now and later
 
-**Now:** one computer per host, real Ubuntu 24.04, root inside, browser/terminal/files/editor, API token, MCP, local model keys, skills folder, screen and browser recovery.
+**Now:** one computer per host, real Ubuntu 24.04, root inside, browser/terminal/files/editor, API token, MCP, several agents on one computer, a skills folder, local model keys, screen and browser recovery, cross-device viewing.
 
-**Later:** snapshots and clones, several computers per host, sharing a computer with a teammate, GPU workspaces.
+**Later:** snapshots and clones, several computers per host, sharing a computer with a teammate, cloud VPS integration with advanced isolation, GPU workspaces.
 
 ## What success looks like
 
-A first-time user runs one command, chooses 4 cores and 8 GB, watches the bar fill, and lands on a desktop where Chrome opens a page, a terminal installs a `.deb`, and an agent — through the token — runs a test inside that computer while the host stays exactly as it was.
+A first-time user runs one command, chooses 4 cores and 8 GB, watches the bar fill, and lands on a desktop where Chrome opens a page, a terminal installs a `.deb`, one agent runs a test through the token while another edits files, and the host stays exactly as it was.

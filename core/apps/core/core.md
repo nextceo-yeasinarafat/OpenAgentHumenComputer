@@ -33,4 +33,4 @@ truth is asked again on every load.
 | --- | --- |
 | `bun run dev` (Vite) | `1010` on `0.0.0.0` |
 | `bun run preview` | `1011` on `0.0.0.0` |
-| the bridge the UI proxies to | `7071` |
+| the bridge (UI, API and streams) | `1010` in the container; `7071` in local dev |

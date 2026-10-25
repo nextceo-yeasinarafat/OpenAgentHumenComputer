@@ -1,6 +1,7 @@
 # OpenHumenComputer
 
-**A real Linux computer for you and your AI — made by one command, owned by you, isolated from the machine you already use.**
+**One click. Many AI agents. One real Linux computer.**
+No expensive cloud VPS per agent, no staring at a terminal, no giving your own laptop to an AI.
 
 [![The desktop of OpenHumenComputer](public/screens/01-desktop.png)](https://youtu.be/fhSloyFmxl8)
 
@@ -10,26 +11,61 @@
 
 ---
 
-## What it is
+## Why this exists
 
-OpenHumenComputer gives an AI its own computer instead of your own.
+Every serious AI agent needs a computer: a shell, files, a browser, an editor, a place to install things and break things. Buying a separate cloud VPS for every agent is expensive, and sitting in front of a terminal for each one is tiring.
 
-One command builds a small UI on your machine. From that UI you choose a name, a password, cores, RAM and storage, and it builds a **real Ubuntu 24.04 computer** in a Docker container: a desktop, a browser, a terminal, a file manager, VS Code Server, a screen you can watch, and a door — an API token and an MCP server — through which an agent can work.
+OpenHumenComputer is one platform for all of them. Install it with one command, connect the AI harnesses you already use (Claude, Codex, Cline, Kilo, or your own) through an API token or MCP, and let them work inside a real Linux computer — while you keep your own laptop, and your laptop stays untouched.
 
-You keep your laptop. The AI gets a machine it can use fully: root inside, `sudo`, `apt`, `.deb` packages, files, a browser it can drive, a screen you can see. Nothing of your own disk is mounted into it.
+## Overview
 
-## What you can do with it
+OpenAgentHumenComputer is an isolated virtual operating system built for AI agents and humans to work together. It turns any ordinary host machine, server, or resource-limited environment into a complete, safe Linux workspace in minutes.
 
-| You want to… | Inside OpenHumenComputer |
-| --- | --- |
-| Give an agent a real target | API token + MCP: run commands, read and write files, open pages, take screenshots |
-| Test something risky | a disposable Linux with its own root — a mistake costs a container, not your machine |
-| Run a local model | install `llama.cpp`, Ollama or any runtime; the demo shows a local model running in the terminal |
-| Use a coding agent | install the CLI you like (the demo uses Kilo) and let it work in a real checkout with VS Code |
-| Install desktop software | `sudo apt install`, `dpkg -i` — a real `.deb` system, not a terminal-only VM |
-| See what the agent did | the screen, the terminal history, the files, screenshots |
-| Work from anywhere | open the same computer from another device on your network |
-| Keep your work machine clean | everything lives inside the computer; the host only runs Docker |
+The AI harnesses run inside a strictly controlled sandbox where they can code, run shell commands, install packages and touch files without putting the host at risk. You can watch the same desktop they work on, step in when needed, and use it yourself.
+
+## Key capabilities
+
+- **Rootless host, root inside.** On a server where you have no `sudo`, OpenHumenComputer starts an Ubuntu container where the agent — and you — have full root.
+- **One platform, many agents.** Several harnesses can attach to the same computer through the API and MCP; each works on its own task while you manage them from one place.
+- **Local Docker, your hardware.** The platform is built for the Docker engine you already run, on the machine you already own. You choose the cores, the RAM and the storage; nothing is rented per agent.
+- **Cross-device access.** The desktop is streamed with noVNC; the browser is driven over the Chrome DevTools Protocol; the machine is reachable over MCP. A desktop, a phone or a small device is enough to watch and control it.
+- **A real desktop, not a terminal.** Chrome, a terminal with real PTY tabs, a file manager with upload, a text editor, a media viewer and VS Code Server — all inside the computer.
+- **Full package freedom.** `sudo apt install`, `dpkg -i` and any `.deb` application work, because it is a real Ubuntu.
+- **Skills you keep.** Bring your own skills folder into the computer; the agent reads it from the filesystem, and the skills stay with the computer, not with a vendor.
+- **Built for security work.** A separate machine for pentesting, network diagnostics, scripting or malware-adjacent experiments, isolated from everything you care about.
+- **Honest provisioning.** Watch every step being built with live logs and a progress bar; when it fails, it says why.
+
+## Architecture and security
+
+```
+browser ──► bridge (one process on :1010)
+              /            the desktop
+              /api/*       create, files, token, services
+              /ws/pty      a real terminal inside the computer
+              /ws/cdp      the DevTools socket of its Chrome
+              /websockify  the live picture of its screen
+              /novnc/*     the noVNC client
+                    │
+                    ▼
+             docker socket
+                    ▼
+      computer container (Ubuntu 24.04)
+      Xvfb · x11vnc · noVNC · Chrome + CDP
+      xterm · PCManFM · VS Code Server · MCP
+      an account with a password and passwordless sudo
+```
+
+- **Docker isolation** — every operation, script and system change stays inside the container. A mistake costs a container, never the host.
+- **MCP and API** — a token-authenticated API (`/api/exec`, `/api/file`, `/api/upload`, `/api/screenshot`, `/api/desktop`, `/api/open-url`) and an MCP server expose the computer's terminal, files, browser and desktop as tools.
+- **No host data** — no host directory is mounted into the computer by default; the repository carries no user data.
+- **One origin** — the bridge serves the UI, the API and every stream from one port, so there is no fragile proxy between the browser and the machine.
+
+## Provisioning workflow
+
+1. **Configure** — the computer's name, the account, the password, the country, the language and the time zone. (Dynamic support for every time zone is on the way.)
+2. **Allocate** — the CPU cores, the RAM, the storage volume and the GPU share, as the job needs.
+3. **Initialize** — press CREATE and watch the image being built and the container being started, step by step. The first build takes 15–25 minutes (curl and Python are compiled from source, Chrome and VS Code are downloaded); later computers start in seconds.
+4. **Use it** — the page moves to the live graphical desktop as soon as the computer is up.
 
 ## The one command
 
@@ -37,44 +73,9 @@ You keep your laptop. The AI gets a machine it can use fully: root inside, `sudo
 curl -fsSL https://raw.githubusercontent.com/nextceo-yeasinarafat/OpenAgentHumenComputer/main/docker/script/setup.sh | bash
 ```
 
-It installs Docker when it is missing, clones this repository, builds the UI image, starts the UI container on port `1010` with the Docker socket mounted, waits for the page, and opens it.
+It installs Docker when it is missing, clones this repository, builds the UI image, starts it on port `1010` with the Docker socket mounted, and opens the page. From there, CREATE makes the computer.
 
-Then, in the page: choose the name and the hardware, press **CREATE**, and watch the computer being built — every step is streamed, with a progress bar. The first build takes 15–25 minutes (curl and Python are compiled from source, Chrome and VS Code are downloaded); every later computer starts in seconds.
-
-Requirements: Docker, `git`, `curl`, network, about 5 GB of free disk for the images.
-
-## How it works
-
-```
-browser ──► one process on :1010 (the bridge)
-              /            the built UI
-              /api/*       state, create, files, token, services
-              /ws/pty      a real terminal in the computer
-              /ws/cdp      the DevTools socket of its Chrome
-              /websockify  the picture of its screen
-              /novnc/*     the noVNC client
-                    │
-                    ▼
-             docker socket
-                    │
-                    ▼
-      computer container (Ubuntu 24.04)
-      Xvfb · x11vnc · noVNC · Chrome + CDP
-      xterm · PCManFM · VS Code Server · MCP
-      an account with a password and sudo
-```
-
-The UI and the bridge are the same process on the same port, so there is no proxy between the browser and the streams. The container is created with the resources you chose (`--cpus`, `--memory`, and `--storage-opt` when the Docker driver accepts it).
-
-## Using it with an agent
-
-- **Token** — `GET /api/token` (reset is intentionally not exposed in the UI).
-- **Commands** — `POST /api/exec` runs a command inside the computer.
-- **Files** — `/api/file`, `/api/fs`, `/api/upload`, `/api/media`, `/api/disk`.
-- **Screen** — `/api/screenshot`, `/api/desktop`, `/api/open-url`.
-- **MCP** — `/api/mcp/config`, `/api/mcp/status`; attach your agent client and use the computer's terminal, files, browser and desktop as tools.
-
-The agent acts inside the computer. It does not see your host files, your host browser, or your host credentials.
+Requirements: Docker, `git`, `curl`, network, about 5 GB of free disk.
 
 ## Screens
 
@@ -94,34 +95,26 @@ The agent acts inside the computer. It does not see your host files, your host b
 
 ![The terminal](public/screens/04-terminal.png)
 
-## Security model
-
-- The computer is a container: its own users, home, root and network. No host directory is mounted into it by default.
-- The password chosen in the UI is the account's password and the lock-screen password.
-- The API token is a second, independent door; the UI deliberately has no "revoke" button.
-- The repository carries no user data. `.env`, `.env.token`, `.venv`, `__pycache__`, `node_modules`, `dist` and `.vscode-server` are ignored; only code and the two fonts the image needs are committed.
-- Images are built from public sources at build time; a computer is not a copy of anybody's machine.
-
 ## Limits, stated honestly
 
-- One computer per host, one human at the desktop, one agent door per computer.
-- The first image build is long; the interface says so instead of hiding it.
-- The storage quota is requested from the Docker driver and is best-effort; without driver support the computer still starts.
+- The first image build is long; later builds reuse it.
+- One computer per host in this version; cloud VPS integration with advanced isolation is in progress.
+- Storage quotas are requested from the Docker driver and are best-effort.
 - Snapshots, clones and team sharing are not in this version.
-- Docker may need admin rights once to install. After that, the computer has its own root and needs nothing from the host.
+- Docker itself may need admin rights once to install; after that, the computer has its own root and needs nothing from the host.
 
 ## Repository
 
 | Path | What lives there |
 | --- | --- |
-| `core/apps/` | the desktop: layout, dock, Chrome window, terminal, explorer, editor, media viewer, settings |
+| `core/apps/` | the desktop: layout, dock, Chrome, terminal, explorer, editor, media viewer, settings |
 | `core/server/bridge.py` | the single server: UI, API, PTY, CDP, screen, files, token, services |
-| `docker/system/` | the computer: screen, browser, terminal, explorer, VS Code, MCP, fonts, dependencies |
+| `docker/system/` | the computer: screen, browser, terminal, explorer, VS Code, MCP, fonts |
 | `docker/ubuntu/` | the Ubuntu image the computer is built from |
 | `docker/ui/` | the UI image and its one-command entrypoint |
 | `docker/script/setup.sh` | the short command above |
-| `public/` | wallpaper, icons, and the demo video |
-| `devpost/` | the planning documents: `scope.md`, `prd.md`, `spec.md` |
+| `public/` | wallpaper, icons, screenshots |
+| `devpost/` | `scope.md`, `prd.md`, `spec.md` |
 
 ## Documentation
 
@@ -135,4 +128,4 @@ MIT — see [`LICENSE`](LICENSE).
 
 ## Name
 
-The product is **OpenHumenComputer**. The repository is **OpenAgentHumenComputer**; the computer container is named `openagentcomputer` and the UI container `openagenthumencomputer`.
+The product is **OpenHumenComputer**. The repository is **OpenAgentHumenComputer**; the computer container is `openagentcomputer`, the UI container `openagenthumencomputer`.
