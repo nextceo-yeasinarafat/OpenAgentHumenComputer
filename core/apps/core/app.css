@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+
+@theme {
+  --color-screen: #16171a;
+  --color-screen-raise: #1d1f23;
+  --color-ink: #e8e6e1;
+  --color-ink-dim: #9a978f;
+  --color-edge: #2c2f35;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-screen);
+  color: var(--color-ink);
+  font-family:
+    "Anthropic Serif Text", ui-serif, Georgia, "Noto Serif Bengali", serif;
+  -webkit-font-smoothing: antialiased;
+}

@@ -1,0 +1,22 @@
+# the packages of the UI (installed with bun install)
+node_modules/
+
+# the virtual environment of the Python side
+.venv/
+
+# the packages the Python side of the UI installs into core/modules
+core/modules/.libs/
+core/modules/.venv/
+core/modules/**/__pycache__/
+
+# build output
+dist/
+*.local
+
+# editor and OS noise
+.DS_Store
+.vscode/
+
+# the secrets of this machine (the token, the keys)
+.env
+.env.token
