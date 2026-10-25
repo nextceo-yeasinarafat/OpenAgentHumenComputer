@@ -15,7 +15,7 @@ export function wallpaperStyle(): CSSProperties {
     width: "100%",
     height: "100%",
     boxSizing: "border-box",
-    backgroundColor: "#0E0E0E",
+    backgroundColor: "#000000",
     backgroundImage: `url(${WALLPAPER_URL}), ${DOTS}`,
     backgroundSize: "cover, 48px 48px",
     backgroundPosition: "center, top left",

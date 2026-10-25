@@ -357,6 +357,10 @@ def make_computer(values: dict) -> None:
 
         token = read_agent_token()
         making.out(f"agent api token: {token}")
+        making.step("starting the screen of the computer")
+        address = container_address()
+        if address:
+            ensure_computer_screen(address)
         making.step(f"the computer is up: {CONTAINER_NAME}")
     except Exception as problem:
         making.error(str(problem))
@@ -2799,8 +2803,15 @@ class Bridge(BaseHTTPRequestHandler):
         self._json(200, {"path": target, "size": len(data)})
 
 
+def boot_services() -> None:
+    address = container_address()
+    if address:
+        ensure_computer_screen(address)
+
+
 def main() -> None:
     server = ThreadingHTTPServer((BRIDGE_HOST, BRIDGE_PORT), Bridge)
+    threading.Thread(target=boot_services, daemon=True).start()
     print(f"bridge: listening on http://{BRIDGE_HOST}:{BRIDGE_PORT}")
     print("bridge: the UI proxies /api here (vite.config.ts)")
     try:

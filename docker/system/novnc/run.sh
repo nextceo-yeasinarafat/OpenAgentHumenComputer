@@ -49,7 +49,7 @@ if ! xdpyinfo -display "$DISPLAY" >/dev/null 2>&1; then
   (( ready )) || die "the X server did not start; see $XVFB_LOG"
 fi
 
-DISPLAY="$DISPLAY" fbsetroot -solid "#0E0E0E" >/dev/null 2>&1 || true
+DISPLAY="$DISPLAY" fbsetroot -solid "#000000" >/dev/null 2>&1 || true
 
 if ! port_open "$OPEN_COMPUTER_VNC_PORT"; then
   nohup x11vnc -display "$DISPLAY" -forever -shared -nopw \
