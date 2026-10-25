@@ -205,21 +205,40 @@ def run_and_stream(args: list[str], making: Making) -> bool:
 
     making.out(f"$ {' '.join(args)}")
     try:
-        process = subprocess.run(
-            args, capture_output=True, text=True, timeout=60 * 90
+        process = subprocess.Popen(
+            args,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            bufsize=0,
         )
     except FileNotFoundError:
         making.error(f"the command is not on this machine: {args[0]}")
         return False
-    except subprocess.TimeoutExpired:
-        making.error("the command ran too long and was stopped")
-        return False
-    for stream, kind in ((process.stdout, "output"), (process.stderr, "output")):
-        for line in (stream or "").splitlines():
-            line = line.strip()
-            if line:
-                making.say(kind, line)
-    if process.returncode != 0:
+
+    assert process.stdout is not None
+    pending = b""
+    while True:
+        chunk = process.stdout.read(512)
+        if not chunk:
+            break
+        pending += chunk
+        while True:
+            cut = -1
+            for mark in (b"\n", b"\r"):
+                index = pending.find(mark)
+                if index != -1 and (cut == -1 or index < cut):
+                    cut = index
+            if cut == -1:
+                break
+            raw, pending = pending[:cut], pending[cut + 1:]
+            text = raw.decode("utf-8", "replace").strip()
+            if text:
+                making.out(text)
+
+    if pending.strip():
+        making.out(pending.decode("utf-8", "replace").strip())
+
+    if process.wait() != 0:
         making.error(f"the command failed (exit {process.returncode})")
         return False
     return True

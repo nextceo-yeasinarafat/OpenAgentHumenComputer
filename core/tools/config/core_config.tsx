@@ -34,6 +34,24 @@ const accent = "#D6E2F0";
 
 const mono = 'ui-monospace, "SF Mono", Menlo, Consolas, monospace';
 
+const PROGRESS_CELLS = 44;
+
+function progressOf(lines: readonly LogLine[]): number {
+  let percent = 0;
+  for (const line of lines) {
+    const text = line.text;
+    if (text.startsWith("creating the computer")) percent = Math.max(percent, 4);
+    else if (text.startsWith("writing the chosen hardware")) percent = Math.max(percent, 8);
+    else if (text.startsWith("building the image")) percent = Math.max(percent, 18);
+    else if (text.startsWith("starting the container")) percent = Math.max(percent, 86);
+    else if (text.startsWith("the computer is up")) percent = 100;
+    else if (line.kind === "output" && percent >= 18 && percent < 86) {
+      percent = Math.min(84, percent + 1);
+    }
+  }
+  return percent;
+}
+
 const stageStyle: CSSProperties = {
   width: "100%",
   height: "100%",
@@ -280,6 +298,20 @@ const terminal: CSSProperties = {
   whiteSpace: "pre-wrap",
   wordBreak: "break-word",
 };
+
+const progressRow: CSSProperties = {
+  display: "flex",
+  alignItems: "baseline",
+  gap: 10,
+  fontFamily: mono,
+  fontSize: 12,
+  lineHeight: 1.2,
+  whiteSpace: "pre",
+  flex: "0 0 auto",
+};
+
+const progressBar: CSSProperties = { color: "#6f6c66" };
+const progressValue: CSSProperties = { color: ink, minWidth: 42, textAlign: "right" };
 
 const caret: CSSProperties = {
   display: "inline-block",
@@ -569,6 +601,11 @@ function Picker({
     ? zoneList
     : [identity.timezone, ...zoneList];
 
+  const lines = log.lines();
+  const percent = progressOf(lines);
+  const filled = Math.round((percent / 100) * PROGRESS_CELLS);
+  const bar = `${"+".repeat(filled)}${"-".repeat(PROGRESS_CELLS - filled)}`;
+
   return (
     <div style={stageStyle}>
       <div style={box}>
@@ -576,19 +613,25 @@ function Picker({
           <style>{fieldRule}</style>
 
           {stage === "logs" ? (
-            <div
-              ref={terminalRef}
-              className="ccf-terminal"
-              style={terminal}
-              aria-label="The log of the making"
-            >
-              {log.lines().map((line, index) => (
-                <div key={`${line.at}-${index}`} style={{ color: logColor(line.kind) }}>
-                  {line.text}
-                </div>
-              ))}
-              <span className="ccf-caret" style={caret} aria-hidden="true" />
-            </div>
+            <>
+              <div style={progressRow} aria-label="The progress of the making">
+                <span style={progressBar}>{bar}</span>
+                <span style={progressValue}>{percent}%</span>
+              </div>
+              <div
+                ref={terminalRef}
+                className="ccf-terminal"
+                style={terminal}
+                aria-label="The log of the making"
+              >
+                {lines.map((line, index) => (
+                  <div key={`${line.at}-${index}`} style={{ color: logColor(line.kind) }}>
+                    {line.text}
+                  </div>
+                ))}
+                <span className="ccf-caret" style={caret} aria-hidden="true" />
+              </div>
+            </>
           ) : (
             <>
           <div style={viewport}>
