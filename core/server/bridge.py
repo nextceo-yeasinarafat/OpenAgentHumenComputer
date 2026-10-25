@@ -9,6 +9,7 @@ import hashlib
 import http.client
 import json
 import os
+import mimetypes
 import re
 import secrets
 import shutil
@@ -1027,6 +1028,7 @@ CHROME_DIR = "/opt/open-computer/chromium"
 CORE_SYSTEAM_DIR = ROOT / "docker" / "core_systeam"
 KNOWN_SERVICES = ("bridge", "computer", "screen", "browser", "mcp", "vscode")
 NOVNC_DIR = "/opt/open-computer/novnc"
+STATIC_DIR = Path(os.environ.get("OPEN_COMPUTER_UI_DIST", str(ROOT / "core" / "app" / "dist")))
 CDP_FORWARD_PORT = 9223
 NOVNC_PORT = 6080
 
@@ -1956,7 +1958,44 @@ class Bridge(BaseHTTPRequestHandler):
         if self.path.startswith("/api/analyse"):
             self.agent_analyse()
             return
-        self._json(404, {"error": "not found"})
+        if route.startswith("/api/"):
+            self._json(404, {"error": "not found"})
+            return
+        self._static(route)
+
+    def _static(self, route: str) -> None:
+        if not STATIC_DIR.is_dir():
+            self._json(503, {"detail": "the UI is not built on this machine"})
+            return
+        wanted = STATIC_DIR / route.lstrip("/")
+        try:
+            target = wanted.resolve()
+            target.relative_to(STATIC_DIR.resolve())
+        except (OSError, ValueError):
+            self._json(404, {"error": "not found"})
+            return
+        if target.is_dir():
+            target = target / "index.html"
+        if not target.is_file():
+            if Path(route).suffix:
+                self._json(404, {"error": "not found"})
+                return
+            target = STATIC_DIR / "index.html"
+        try:
+            raw = target.read_bytes()
+        except OSError:
+            self._json(404, {"error": "not found"})
+            return
+        kind = mimetypes.guess_type(target.name)[0] or "application/octet-stream"
+        self.send_response(200)
+        self.send_header("Content-Type", kind)
+        self.send_header("Content-Length", str(len(raw)))
+        self.send_header(
+            "Cache-Control",
+            "no-store" if target.name == "index.html" else "public, max-age=3600",
+        )
+        self.end_headers()
+        self.wfile.write(raw)
 
     def do_POST(self) -> None:
         global MAKING_RUNNING

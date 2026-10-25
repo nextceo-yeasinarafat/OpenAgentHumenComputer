@@ -12,5 +12,8 @@ HOST="${OPEN_COMPUTER_UI_HOST:-0.0.0.0}"
 }
 
 cd "$APP"
-printf 'ui: serving %s on %s:%s\n' "$APP/dist" "$HOST" "$PORT"
-exec ./node_modules/.bin/vite preview --host "$HOST" --port "$PORT" --strictPort
+printf 'ui: serving %s and the bridge on %s:%s\n' "$APP/dist" "$HOST" "$PORT"
+export OPEN_COMPUTER_UI_DIST="$APP/dist"
+export AGENT_HUMEN_COMPUTER_BRIDGE_HOST="$HOST"
+export AGENT_HUMEN_COMPUTER_BRIDGE_PORT="$PORT"
+exec python3 "$APP/core/server/bridge.py"

@@ -28,12 +28,11 @@ if [[ ! -f dist/index.html ]]; then
   npm run build
 fi
 
-log "serving $APP/dist on $HOST:$PORT"
+log "serving $APP/dist and the bridge on $HOST:$PORT"
 
 export OPEN_COMPUTER_DOCKER_DIR="$APP/docker"
-if [[ -f "$APP/core/server/bridge.py" ]]; then
-  log "starting the bridge on 127.0.0.1:7071"
-  nohup python3 "$APP/core/server/bridge.py" >>/tmp/openagenthumencomputer-bridge.log 2>&1 &
-fi
+export OPEN_COMPUTER_UI_DIST="$APP/dist"
+export AGENT_HUMEN_COMPUTER_BRIDGE_HOST="$HOST"
+export AGENT_HUMEN_COMPUTER_BRIDGE_PORT="$PORT"
 
-exec ./node_modules/.bin/vite preview --host "$HOST" --port "$PORT" --strictPort
+exec python3 "$APP/core/server/bridge.py"

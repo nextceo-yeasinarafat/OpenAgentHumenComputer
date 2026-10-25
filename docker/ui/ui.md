@@ -2,8 +2,8 @@
 
 The image that serves the web UI of the computer. It is deliberately small: an
 **Ubuntu 24.04 with Node.js, git and the project only** — no desktop, no
-browser, no editor, no VNC. Its one job is to serve the Vite build on port
-`1010` for every interface of the machine.
+browser, no editor, no VNC. Its one job is to serve the build and the bridge
+on port `1010` for every interface of the machine, from one process.
 
 ## Files
 
@@ -12,7 +12,7 @@ browser, no editor, no VNC. Its one job is to serve the Vite build on port
 | `Dockerfile` | ubuntu:24.04 → Node.js LTS → the scripts of `core/` → `git clone` of the project → `npm install` + `npm run build` |
 | `build.sh` | resolves the latest Node.js LTS, then builds `openagenthumencomputer/ui:latest` |
 | `run.sh` | starts (or replaces) the container `openagenthumencomputer`, publishing `1010` |
-| `core/start.sh` | the entrypoint: clone/install/build when missing, then serve |
+| `core/start.sh` | the entrypoint: clone/install/build when missing, then run the bridge that serves the build, `/api`, `/ws`, `/websockify` and `/novnc` on `1010` |
 | `core/pull.sh` | `git fetch` + `npm install` + `npm run build` inside the container |
 | `core/serve.sh` | serves `core/app/dist` on `0.0.0.0:1010` |
 | `core/status.py` | JSON state: commit, build, runtime, whether the port answers |
