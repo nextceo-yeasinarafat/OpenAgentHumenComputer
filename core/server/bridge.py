@@ -1151,8 +1151,6 @@ def ensure_computer_screen(address: str) -> None:
 
 
 
-    if container_port_open(address, NOVNC_PORT):
-        return
     try:
         docker_exec_output(
             ["bash", f"{NOVNC_DIR}/control.sh", "start"],
@@ -2742,9 +2740,12 @@ class Bridge(BaseHTTPRequestHandler):
                         capture_output=True, text=True, timeout=15,
                     )
                     text = f"{answer.stdout} {answer.stderr}".lower()
-                    services[name] = (
-                        "off" if answer.returncode != 0 or "not running" in text else "on"
+                    dead = (
+                        "not running" in text
+                        or "no vnc server" in text
+                        or "display is down" in text
                     )
+                    services[name] = "off" if answer.returncode != 0 or dead else "on"
                 except (OSError, subprocess.SubprocessError):
                     services[name] = "off"
         self._json(200, {"services": services})

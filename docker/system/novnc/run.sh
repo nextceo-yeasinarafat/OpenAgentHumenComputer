@@ -33,7 +33,7 @@ wait_port() {
 
 if ! xdpyinfo -display "$DISPLAY" >/dev/null 2>&1; then
   rm -f "/tmp/.X${DISPLAY#:}-lock" "/tmp/.X11-unix/X${DISPLAY#:}" 2>/dev/null || true
-  nohup Xvfb "$DISPLAY" -screen 0 "$OPEN_COMPUTER_SCREEN" \
+  setsid nohup Xvfb "$DISPLAY" -screen 0 "$OPEN_COMPUTER_SCREEN" \
     -ac +extension RANDR +render -noreset \
     >>"$XVFB_LOG" 2>&1 &
   echo $! >"$XVFB_PID_FILE"
@@ -52,7 +52,7 @@ fi
 DISPLAY="$DISPLAY" fbsetroot -solid "#000000" >/dev/null 2>&1 || true
 
 if ! port_open "$OPEN_COMPUTER_VNC_PORT"; then
-  nohup x11vnc -display "$DISPLAY" -forever -shared -nopw \
+  setsid nohup x11vnc -display "$DISPLAY" -forever -shared -nopw \
     -rfbport "$OPEN_COMPUTER_VNC_PORT" -localhost -xkb -ncache 0 -noxdamage \
     >>"$X11VNC_LOG" 2>&1 &
   echo $! >"$X11VNC_PID_FILE"
@@ -64,7 +64,7 @@ if ! port_open "$OPEN_COMPUTER_VNC_PORT"; then
 fi
 
 if ! port_open "$OPEN_COMPUTER_NOVNC_PORT"; then
-  nohup "$WEBSOCKIFY" --heartbeat=10 --web="$NOVNC_APP" \
+  setsid nohup "$WEBSOCKIFY" --heartbeat=10 --web="$NOVNC_APP" \
     "$OPEN_COMPUTER_BIND:$OPEN_COMPUTER_NOVNC_PORT" "127.0.0.1:$OPEN_COMPUTER_VNC_PORT" \
     >>"$NOVNC_LOG" 2>&1 &
   echo $! >"$WEBSOCKIFY_PID_FILE"
