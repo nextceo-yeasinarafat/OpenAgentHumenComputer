@@ -330,7 +330,7 @@ computer_explorer.tsx   ← the window: sidebar, toolbar, folder, lights, corner
 
 ## The folder icon
 
-- `openagenthumencomputer/core/import/public/explorer_icons/mactahoe-folder.svg` is the folder of
+- `openagenthumencomputer/public/explorer_icons/mactahoe-folder.svg` is the folder of
   the [MacTahoe Icon Theme](https://github.com/vinceliuice/MacTahoe-icon-theme)
   by vinceliuice (GPL-3.0), the same file the first explorer uses. It is a plain
   file, not a bundled module, so it is read by URL:

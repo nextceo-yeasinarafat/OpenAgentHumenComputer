@@ -2,14 +2,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Copy01Icon from "@hugeicons/core-free-icons/Copy01Icon";
-import DiamondMinusIcon from "@hugeicons/core-free-icons/DiamondMinusIcon";
 
 import { copyText } from "./settings_clipboard.ts";
-import { fetchApiToken, resetApiToken } from "./settings_api_token.ts";
+import { fetchApiToken } from "./settings_api_token.ts";
 
-
-
-const ARM_MS = 3200;
 
 
 const API_BASE_URL = "http://127.0.0.1:7071";
@@ -76,11 +72,8 @@ export default function SettingsApiToken() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(0);
   const [urlCopied, setUrlCopied] = useState(0);
-  const [armed, setArmed] = useState(false);
-  const [resetting, setResetting] = useState(false);
   const copiedTimer = useRef<number | null>(null);
   const urlCopiedTimer = useRef<number | null>(null);
-  const armedTimer = useRef<number | null>(null);
 
   useEffect(() => {
     let live = true;
@@ -96,16 +89,7 @@ export default function SettingsApiToken() {
     return () => {
       if (copiedTimer.current !== null) window.clearTimeout(copiedTimer.current);
       if (urlCopiedTimer.current !== null) window.clearTimeout(urlCopiedTimer.current);
-      if (armedTimer.current !== null) window.clearTimeout(armedTimer.current);
     };
-  }, []);
-
-  const disarm = useCallback(() => {
-    setArmed(false);
-    if (armedTimer.current !== null) {
-      window.clearTimeout(armedTimer.current);
-      armedTimer.current = null;
-    }
   }, []);
 
   const copyToken = useCallback(async () => {
@@ -121,25 +105,6 @@ export default function SettingsApiToken() {
     if (urlCopiedTimer.current !== null) window.clearTimeout(urlCopiedTimer.current);
     urlCopiedTimer.current = window.setTimeout(() => setUrlCopied(0), 1600);
   }, []);
-
-  const reset = useCallback(async () => {
-    if (resetting) return;
-    if (!armed) {
-      setArmed(true);
-      armedTimer.current = window.setTimeout(disarm, ARM_MS);
-      return;
-    }
-    disarm();
-    setResetting(true);
-    setError(null);
-    try {
-      setToken(await resetApiToken());
-    } catch (cause) {
-      setError(String(cause));
-    } finally {
-      setResetting(false);
-    }
-  }, [armed, disarm, resetting]);
 
   return (
     <>
@@ -231,24 +196,6 @@ export default function SettingsApiToken() {
           color: #30D158;
         }
 
-        .oc-api__icon--reset {
-          color: #C47A6D;
-        }
-
-        .oc-api__icon--reset:hover {
-          background: rgba(196, 122, 109, 0.14);
-          color: #E09B8F;
-        }
-
-        .oc-api__icon--reset[data-armed="true"] {
-          background: #C47A6D;
-          color: #0E0E0E;
-        }
-
-        .oc-api__icon:disabled {
-          opacity: 0.4;
-        }
-
         .oc-api__icon:focus-visible,
         .oc-api__input:focus-visible {
           outline: 1px solid #D6E2F0;
@@ -267,7 +214,7 @@ export default function SettingsApiToken() {
           <input
             className="oc-api__input oc-api__input--icons2"
             type="password"
-            value={resetting ? "writing a new word…" : token}
+            value={token}
             readOnly
             spellCheck={false}
             aria-label="the agent api token"
@@ -278,18 +225,6 @@ export default function SettingsApiToken() {
               label="Copy the token"
               onCopy={() => void copyToken()}
             />
-            <motion.button
-              type="button"
-              className="oc-api__icon oc-api__icon--reset"
-              data-armed={armed}
-              aria-label={armed ? "Confirm the token reset" : "Reset the token"}
-              title={armed ? "Confirm reset" : "Reset token"}
-              disabled={resetting}
-              whileTap={{ scale: 0.92 }}
-              onClick={() => void reset()}
-            >
-              <HugeiconsIcon icon={DiamondMinusIcon} size={16} color="currentColor" />
-            </motion.button>
           </div>
         </div>
 

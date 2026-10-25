@@ -49,7 +49,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), tailwindcss()],
     
-    publicDir: "core/import/public",
+    publicDir: "public",
     
     
     server: {

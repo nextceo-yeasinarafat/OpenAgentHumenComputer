@@ -23,7 +23,7 @@ speaks to the machine, and the tools that let AI agents speak to it too.
 | `tools/token/` | the agent tokens that open the API |
 | `server/` | the bridge (bridge.py): every word between the page and the machine |
 | `modules/` | the Python packages reserved for the UI's own AI (not installed yet) |
-| `import/public/` | the files served at the root: wallpaper, dock icons, settings icons, the loading logo |
+| `../public/` | the files served at the root: wallpaper, dock icons, settings icons, the loading logo |
 
 The whole UI is one page: it asks the bridge what is true (a computer
 already made? a making in progress?), covers itself with the loading, and

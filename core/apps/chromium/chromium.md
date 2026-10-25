@@ -151,7 +151,7 @@ the real Chromium of the container + its screen
 
 ### 7. `chromium_loading.tsx` — the black page
 - A page of `#0E0E0E` with the mark of the computer in the middle of it:
-  `openagenthumencomputer/core/import/public/chromium_loading/chromium_loading.svg`, the Ubuntu
+  `openagenthumencomputer/public/chromium_loading/chromium_loading.svg`, the Ubuntu
   dots of the computer, turning once every five seconds, drawn at `96px`.
 - The mark breathes gently (2.4s) and the page fades in (220ms), so the window
   looks alive while it opens. Both stop for a user who asked for less motion

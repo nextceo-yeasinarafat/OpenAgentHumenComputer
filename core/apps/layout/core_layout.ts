@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 
 
 
-export const WALLPAPER_URL = "/wallpaper/openhumen-computer.jpg";
+export const WALLPAPER_URL = "/wallpaper/openhumencomputer-x2.jpeg";
 
 
 const DOTS = "radial-gradient(#2f3136 1px, transparent 1.4px)";
