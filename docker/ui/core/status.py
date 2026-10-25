@@ -61,7 +61,6 @@ def main() -> dict[str, object]:
         "runtime": {
             "node": run("node", "--version"),
             "npm": run("npm", "--version"),
-            "bun": run("bun", "--version"),
         },
         "server": {
             "host": HOST,

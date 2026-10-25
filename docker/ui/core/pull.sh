@@ -24,11 +24,11 @@ else
   log "updated: $before -> $after"
 fi
 
-log "installing the packages (bun install)"
-bun install
+log "installing the packages (npm install)"
+npm install --no-audit --no-fund
 
-log "building the UI (bun run build)"
-bun run build
+log "building the UI (npm run build)"
+npm run build
 
 "$HERE/status.py" || true
 

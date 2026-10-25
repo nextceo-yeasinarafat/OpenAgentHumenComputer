@@ -54,7 +54,7 @@ docker stop openagenthumencomputer
 docker rm -f openagenthumencomputer
 ```
 
-The UI image takes a few minutes to build (Node, Bun, the packages and the
+The UI image takes a few minutes to build (Node, the packages and the
 production build). The Linux of the computer is built on the first CREATE:
 15–25 minutes, once; every later computer starts in seconds.
 

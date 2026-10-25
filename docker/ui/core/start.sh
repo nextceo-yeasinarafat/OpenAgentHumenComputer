@@ -19,13 +19,13 @@ fi
 cd "$APP"
 
 if [[ ! -d node_modules ]]; then
-  log "installing the packages (bun install)"
-  bun install
+  log "installing the packages (npm install)"
+  npm install --no-audit --no-fund
 fi
 
 if [[ ! -f dist/index.html ]]; then
-  log "building the UI (bun run build)"
-  bun run build
+  log "building the UI (npm run build)"
+  npm run build
 fi
 
 log "serving $APP/dist on $HOST:$PORT"
@@ -36,4 +36,4 @@ if [[ -f "$APP/core/server/bridge.py" ]]; then
   nohup python3 "$APP/core/server/bridge.py" >>/tmp/openagenthumencomputer-bridge.log 2>&1 &
 fi
 
-exec bun x vite preview --host "$HOST" --port "$PORT" --strictPort
+exec ./node_modules/.bin/vite preview --host "$HOST" --port "$PORT" --strictPort

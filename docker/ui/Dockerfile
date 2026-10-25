@@ -1,7 +1,7 @@
 # The UI image of the computer.
 #
 # It is an Ubuntu 24.04 with nothing but what serving the web UI needs: Node.js,
-# Bun, git and the project itself. No desktop, no browser, no editor, no VNC.
+# git and the project itself. No desktop, no browser, no editor, no VNC.
 # The project is cloned from its repository at build time, so the image always
 # carries a checkout it did not get from the machine that builds it.
 #
@@ -42,22 +42,6 @@ RUN set -eux; \
     node --version; \
     npm --version
 
-# Bun, the package manager and script runner of the project.
-ARG BUN_VERSION=1.4.4
-RUN set -eux; \
-    arch="$(dpkg --print-architecture)"; \
-    case "$arch" in \
-      amd64) bun_arch=x64 ;; \
-      arm64) bun_arch=aarch64 ;; \
-      *) echo "unsupported architecture: $arch" >&2; exit 1 ;; \
-    esac; \
-    curl -fsSL --retry 3 --retry-delay 2 -o /tmp/bun.zip \
-      "https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-${bun_arch}.zip"; \
-    unzip -q /tmp/bun.zip -d /tmp/bun; \
-    install -m 0755 "/tmp/bun/bun-linux-${bun_arch}/bun" /usr/local/bin/bun; \
-    rm -rf /tmp/bun.zip /tmp/bun; \
-    bun --version
-
 ARG DOCKER_VERSION=27.3.1
 RUN set -eux; \
     arch="$(dpkg --print-architecture)"; \
@@ -87,8 +71,8 @@ RUN set -eux; \
 # The packages and the production build, so the container starts from a ready
 # dist/ and does not need the network to boot.
 WORKDIR /opt/openagenthumencomputer/core/app
-RUN bun install \
-  && bun run build
+RUN npm install --no-audit --no-fund \
+  && npm run build
 
 ENV NODE_ENV=production
 

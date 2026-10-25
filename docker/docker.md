@@ -9,14 +9,14 @@ image with its own `install.sh`.
 | Folder | What it owns | Main ports |
 | --- | --- | --- |
 | `ubuntu/` | the base image, the user, the build scripts | — |
-| `ui/` | the small image that serves the web UI (Node.js + Bun, no desktop) | `1010` |
+| `ui/` | the small image that serves the web UI (Node.js, no desktop) | `1010` |
 | `system/` | the machine itself: everything that runs inside the computer | — |
 
 The parts of the machine live inside `system/`:
 
 | Folder | What it owns | Main ports |
 | --- | --- | --- |
-| `system/dependency/` | latest stable curl, Python and Bun | — |
+| `system/dependency/` | latest stable curl and Python | — |
 | `system/cdp/` | the DevTools protocol bridge (`9223 → 9222`) | `9223` (internal) |
 | `system/novnc/` | Xvfb (4K), x11vnc, noVNC v1.7.0, websockify v0.13.0 — no window manager, on purpose | `6080`, `5900` (loopback) |
 | `system/terminal/` | xterm and the real bash terminal | — |
@@ -41,7 +41,7 @@ be reachable:
 
 ```bash
 cd ui
-./build.sh      # ubuntu + curl/python/bun + the project, built from GitHub
+./build.sh      # ubuntu + curl/python + the project, built from GitHub
 ./run.sh        # container openagenthumencomputer on http://<ip>:1010
 ```
 

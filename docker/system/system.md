@@ -18,7 +18,7 @@ System hardware configuration module for OpenAgentHumenComputer. All values are 
 | `system.md` | This documentation. |
 | `auth/` | the door of the account: PBKDF2 in SQLite, JWT sessions (`auth_service.py` on 8988). |
 | `api/` | reserved: the API of the computer inside the container. |
-| `dependency/` | latest stable curl, Python and Bun. |
+| `dependency/` | latest stable curl and Python. |
 | `terminal/` | xterm and the real bash terminal. |
 | `explorer/` | PCManFM, the real file manager. |
 | `vscode/` | the latest stable VS Code Server (web build). |

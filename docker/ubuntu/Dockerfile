@@ -49,15 +49,13 @@ RUN if ! id -u open-computer >/dev/null 2>&1; then \
   && chmod 0440 /etc/sudoers.d/90-open-computer
 
 # The toolchains of the computer. docker/system/dependency owns them: the
-# latest stable curl and Python (built from source) and Bun. Each installer
-# writes its own /etc/profile.d file, so the PATH of a login shell is set
-# automatically.
+# latest stable curl and Python (built from source). Each installer writes its
+# own /etc/profile.d file, so the PATH of a login shell is set automatically.
 COPY system/dependency/ /opt/open-computer/dependency/
 RUN chmod 0755 /opt/open-computer/dependency/*.sh \
   && bash /opt/open-computer/dependency/curl_install.sh
 
 RUN bash /opt/open-computer/dependency/python_install.sh
-RUN bash /opt/open-computer/dependency/bun_install.sh
 
 # The DevTools protocol bridge. docker/system/cdp owns it: a small forwarder
 # that takes Chrome's loopback DevTools port (9222) to the container network

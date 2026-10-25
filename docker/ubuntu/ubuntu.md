@@ -21,7 +21,7 @@ image by the Dockerfile, so one image is the whole machine.
 - **User:** `open-computer` (uid 1000), `/bin/bash`, passwordless sudo,
   home `/home/open-computer`, with `.local/bin`, `.config` and `workspace`.
 - **Modules copied into the image:**
-  - `../system/dependency` → latest stable curl, Python, Bun
+  - `../system/dependency` → latest stable curl, Python
   - `../system/cdp` → the DevTools protocol bridge (`9223 → 9222`)
   - `../system/novnc` → Xvfb (4K), x11vnc, noVNC, websockify
   - `../system/terminal` → xterm and the terminal controller

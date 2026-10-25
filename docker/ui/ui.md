@@ -1,7 +1,7 @@
 # ui (`openagenthumencomputer/docker/ui`)
 
 The image that serves the web UI of the computer. It is deliberately small: an
-**Ubuntu 24.04 with Node.js, Bun, git and the project only** — no desktop, no
+**Ubuntu 24.04 with Node.js, git and the project only** — no desktop, no
 browser, no editor, no VNC. Its one job is to serve the Vite build on port
 `1010` for every interface of the machine.
 
@@ -9,11 +9,11 @@ browser, no editor, no VNC. Its one job is to serve the Vite build on port
 
 | File | What it does |
 | --- | --- |
-| `Dockerfile` | ubuntu:24.04 → Node.js LTS → Bun → the scripts of `core/` → `git clone` of the project → `bun install` + `bun run build` |
-| `build.sh` | resolves the latest Node.js LTS and Bun, then builds `openagenthumencomputer/ui:latest` |
+| `Dockerfile` | ubuntu:24.04 → Node.js LTS → the scripts of `core/` → `git clone` of the project → `npm install` + `npm run build` |
+| `build.sh` | resolves the latest Node.js LTS, then builds `openagenthumencomputer/ui:latest` |
 | `run.sh` | starts (or replaces) the container `openagenthumencomputer`, publishing `1010` |
 | `core/start.sh` | the entrypoint: clone/install/build when missing, then serve |
-| `core/pull.sh` | `git fetch` + `bun install` + `bun run build` inside the container |
+| `core/pull.sh` | `git fetch` + `npm install` + `npm run build` inside the container |
 | `core/serve.sh` | serves `core/app/dist` on `0.0.0.0:1010` |
 | `core/status.py` | JSON state: commit, build, runtime, whether the port answers |
 | `core/core.md` | the container layout and the commands |
@@ -54,4 +54,4 @@ docker restart openagenthumencomputer
 
 - Port `1010` is below 1024: inside the container it is root, and the host port
   is published by the Docker daemon, so no capability is needed for this.
-- The build needs the network: Node.js, Bun, the Git clone and the npm registry.
+- The build needs the network: Node.js, the Git clone and the npm registry.

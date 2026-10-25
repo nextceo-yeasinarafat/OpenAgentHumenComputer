@@ -18,7 +18,7 @@ served from here.
 | File | What it does |
 | --- | --- |
 | `start.sh` | runs at container start; makes sure `app/`, `node_modules/` and `dist/` exist, then serves |
-| `pull.sh` | `git fetch` + `git reset --hard origin/main` + `bun install` + `bun run build` |
+| `pull.sh` | `git fetch` + `git reset --hard origin/main` + `npm install` + `npm run build` |
 | `serve.sh` | only the server, for a build that is already on disk |
 | `status.py` | prints the state as JSON; safe to run at any time |
 
