@@ -14,7 +14,7 @@ RESTORE=0
 case "${1:-}" in
   --restore) RESTORE=1 ;;
   -h|--help)
-    sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'
+    printf 'usage: %s [--force]\n' "$(basename "$0")"
     exit 0
     ;;
 esac

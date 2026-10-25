@@ -4,6 +4,10 @@ node_modules/
 # the virtual environment of the Python side
 .venv/
 
+# the compiled Python of the scripts
+__pycache__/
+*.pyc
+
 # the packages the Python side of the UI installs into core/modules
 core/modules/.libs/
 core/modules/.venv/

@@ -23,3 +23,12 @@ body {
     "Anthropic Serif Text", ui-serif, Georgia, "Noto Serif Bengali", serif;
   -webkit-font-smoothing: antialiased;
 }
+
+.ccf-terminal {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ccf-terminal::-webkit-scrollbar {
+  display: none;
+}

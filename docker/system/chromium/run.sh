@@ -16,7 +16,7 @@ for arg in "$@"; do
   case "$arg" in
     --restore) RESTORE=1 ;;
     -h|--help)
-      sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'
+      printf 'usage: %s [--force]\n' "$(basename "$0")"
       exit 0
       ;;
     -*)

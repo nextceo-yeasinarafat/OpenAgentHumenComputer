@@ -523,6 +523,7 @@ function Picker({
   const [hardware, setHardware] = useState<ComputerHardware>(EMPTY_HARDWARE);
   const [touched, setTouched] = useState(false);
   const [page, setPage] = useState(0);
+  const terminalRef = useRef<HTMLDivElement | null>(null);
   const [, forceRender] = useState(0);
 
   useEffect(() => {
@@ -554,7 +555,13 @@ function Picker({
 
   useEffect(() => {
     if (stage !== "logs") return;
-    return log.subscribe(() => forceRender((tick) => tick + 1));
+    const follow = () => {
+      const node = terminalRef.current;
+      if (node) node.scrollTop = node.scrollHeight;
+      forceRender((tick) => tick + 1);
+    };
+    follow();
+    return log.subscribe(follow);
   }, [stage, log]);
 
   const zoneList = timezonesFor(identity.country);
@@ -569,7 +576,12 @@ function Picker({
           <style>{fieldRule}</style>
 
           {stage === "logs" ? (
-            <div style={terminal} aria-label="The log of the making">
+            <div
+              ref={terminalRef}
+              className="ccf-terminal"
+              style={terminal}
+              aria-label="The log of the making"
+            >
               {log.lines().map((line, index) => (
                 <div key={`${line.at}-${index}`} style={{ color: logColor(line.kind) }}>
                   {line.text}

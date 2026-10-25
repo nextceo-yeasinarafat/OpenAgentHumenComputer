@@ -11,7 +11,7 @@ for arg in "$@"; do
   case "$arg" in
     --force) force=1 ;;
     -h|--help)
-      sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'
+      printf 'usage: %s [--force]\n' "$(basename "$0")"
       exit 0
       ;;
     *) echo "install.sh: unknown argument: $arg" >&2; exit 2 ;;

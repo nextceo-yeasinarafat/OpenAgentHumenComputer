@@ -26,6 +26,8 @@ const screen: CSSProperties = {
 };
 
 
+const GUIDE_GAP = 12;
+
 const dotted = (direction: "to bottom" | "to right"): CSSProperties => ({
   position: "absolute",
   backgroundImage: `repeating-linear-gradient(${direction}, #2f3136 0 3px, transparent 3px 10px)`,
@@ -35,8 +37,30 @@ const dotted = (direction: "to bottom" | "to right"): CSSProperties => ({
   pointerEvents: "none",
 });
 
-const vertical = (left: string): CSSProperties => ({ ...dotted("to bottom"), left });
-const horizontal = (top: string): CSSProperties => ({ ...dotted("to right"), top });
+const vertical = (left: string): CSSProperties[] =>
+  [
+    { top: 0, height: `calc(18% - ${GUIDE_GAP}px)` },
+    { top: `calc(18% + ${GUIDE_GAP}px)`, height: `calc(64% - ${2 * GUIDE_GAP}px)` },
+    { top: `calc(82% + ${GUIDE_GAP}px)`, bottom: 0 },
+  ].map((span) => ({ ...dotted("to bottom"), left, ...span }));
+
+const horizontal = (top: string): CSSProperties[] =>
+  [
+    { left: 0, width: `calc(18% - ${GUIDE_GAP}px)` },
+    { left: `calc(18% + ${GUIDE_GAP}px)`, width: `calc(64% - ${2 * GUIDE_GAP}px)` },
+    { left: `calc(82% + ${GUIDE_GAP}px)`, right: 0 },
+  ].map((span) => ({ ...dotted("to right"), top, ...span }));
+
+const plus: CSSProperties = {
+  position: "absolute",
+  transform: "translate(-50%, -50%)",
+  color: "#2f3136",
+  fontFamily: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
+  fontSize: 13,
+  lineHeight: "13px",
+  pointerEvents: "none",
+  userSelect: "none",
+};
 
 
 const cell: CSSProperties = {
@@ -56,10 +80,30 @@ const cell: CSSProperties = {
 function Ground() {
   return (
     <>
-      <div style={vertical("18%")} aria-hidden="true" />
-      <div style={vertical("82%")} aria-hidden="true" />
-      <div style={horizontal("18%")} aria-hidden="true" />
-      <div style={horizontal("82%")} aria-hidden="true" />
+      {vertical("18%").map((style, index) => (
+        <div key={`v-18-${index}`} style={style} aria-hidden="true" />
+      ))}
+      {vertical("82%").map((style, index) => (
+        <div key={`v-82-${index}`} style={style} aria-hidden="true" />
+      ))}
+      {horizontal("18%").map((style, index) => (
+        <div key={`h-18-${index}`} style={style} aria-hidden="true" />
+      ))}
+      {horizontal("82%").map((style, index) => (
+        <div key={`h-82-${index}`} style={style} aria-hidden="true" />
+      ))}
+      <span style={{ ...plus, left: "18%", top: "18%" }} aria-hidden="true">
+        +
+      </span>
+      <span style={{ ...plus, left: "82%", top: "18%" }} aria-hidden="true">
+        +
+      </span>
+      <span style={{ ...plus, left: "18%", top: "82%" }} aria-hidden="true">
+        +
+      </span>
+      <span style={{ ...plus, left: "82%", top: "82%" }} aria-hidden="true">
+        +
+      </span>
     </>
   );
 }
