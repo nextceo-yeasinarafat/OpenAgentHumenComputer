@@ -25,7 +25,7 @@ else
 fi
 
 log "installing the packages (npm install)"
-npm install --no-audit --no-fund
+npm install --include=dev --no-audit --no-fund
 
 log "building the UI (npm run build)"
 npm run build

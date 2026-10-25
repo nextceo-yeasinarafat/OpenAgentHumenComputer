@@ -20,7 +20,7 @@ cd "$APP"
 
 if [[ ! -d node_modules ]]; then
   log "installing the packages (npm install)"
-  npm install --no-audit --no-fund
+  npm install --include=dev --no-audit --no-fund
 fi
 
 if [[ ! -f dist/index.html ]]; then
