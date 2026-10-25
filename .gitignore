@@ -20,6 +20,8 @@ dist/
 # editor and OS noise
 .DS_Store
 .vscode/
+.vscode-server/
+.vscode-server-insiders/
 
 # the secrets of this machine (the token, the keys)
 .env
